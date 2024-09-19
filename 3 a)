@@ -1,0 +1,42 @@
+import java.util.Scanner;
+
+// Target Interface
+interface PaymentProcessor {
+    void processPayment(double amount);
+}
+
+// Adaptee Class
+class ThirdPartyPaymentSystem {
+    public void makePayment(double amount) {
+        System.out.println("Payment of $" + amount + " processed through third-party system.");
+    }
+}
+
+// Adapter Class
+class PaymentAdapter implements PaymentProcessor {
+    private ThirdPartyPaymentSystem thirdPartyPaymentSystem;
+
+    public PaymentAdapter(ThirdPartyPaymentSystem thirdPartyPaymentSystem) {
+        this.thirdPartyPaymentSystem = thirdPartyPaymentSystem;
+    }
+
+    @Override
+    public void processPayment(double amount) {
+        thirdPartyPaymentSystem.makePayment(amount);
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ThirdPartyPaymentSystem thirdParty = new ThirdPartyPaymentSystem();
+        PaymentProcessor paymentProcessor = new PaymentAdapter(thirdParty);
+        
+        System.out.print("Enter payment amount: ");
+        double amount = scanner.nextDouble();
+        paymentProcessor.processPayment(amount);
+        
+        scanner.close();
+    }
+}
