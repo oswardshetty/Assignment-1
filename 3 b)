@@ -1,0 +1,84 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Component Interface
+interface CourseComponent {
+    void showDetails();
+}
+
+// Leaf Classes
+class Module implements CourseComponent {
+    private String name;
+
+    public Module(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("Module: " + name);
+    }
+}
+
+class Lesson implements CourseComponent {
+    private String name;
+
+    public Lesson(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("Lesson: " + name);
+    }
+}
+
+// Composite Class
+class CourseGroup implements CourseComponent {
+    private List<CourseComponent> components = new ArrayList<>();
+
+    public void addComponent(CourseComponent component) {
+        components.add(component);
+    }
+
+    @Override
+    public void showDetails() {
+        for (CourseComponent component : components) {
+            component.showDetails();
+        }
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        CourseGroup courseGroup = new CourseGroup();
+        
+        System.out.print("Enter the number of modules to add: ");
+        int moduleCount = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        for (int i = 0; i < moduleCount; i++) {
+            System.out.print("Enter module name: ");
+            String moduleName = scanner.nextLine();
+            courseGroup.addComponent(new Module(moduleName));
+        }
+        
+        System.out.print("Enter the number of lessons to add: ");
+        int lessonCount = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        for (int i = 0; i < lessonCount; i++) {
+            System.out.print("Enter lesson name: ");
+            String lessonName = scanner.nextLine();
+            courseGroup.addComponent(new Lesson(lessonName));
+        }
+        
+        System.out.println("\nCourse Components:");
+        courseGroup.showDetails();
+        
+        scanner.close();
+    }
+}
