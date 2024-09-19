@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+// Singleton Class
+class ClassroomManager {
+    private static ClassroomManager instance;
+
+    // Private constructor prevents instantiation from other classes
+    private ClassroomManager() {}
+
+    // Public method to provide access to the instance
+    public static ClassroomManager getInstance() {
+        if (instance == null) {
+            instance = new ClassroomManager();
+        }
+        return instance;
+    }
+
+    // Example method to demonstrate functionality
+    public void manageClassroom(String classroomName) {
+        System.out.println("Managing classroom: " + classroomName);
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Accessing the Singleton instance
+        ClassroomManager manager = ClassroomManager.getInstance();
+
+        while (true) {
+            System.out.println("Enter a classroom name (or type 'exit' to quit):");
+            String classroomName = scanner.nextLine();
+
+            if (classroomName.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            manager.manageClassroom(classroomName);
+        }
+
+        scanner.close();
+        System.out.println("Exiting the program.");
+    }
+}
