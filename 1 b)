@@ -1,0 +1,117 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Command Interface
+interface Command {
+    void execute();
+    void undo();
+}
+
+// Concrete Command to add an assignment
+class AddAssignmentCommand implements Command {
+    private AssignmentManager manager;
+    private String assignment;
+
+    public AddAssignmentCommand(AssignmentManager manager, String assignment) {
+        this.manager = manager;
+        this.assignment = assignment;
+    }
+
+    @Override
+    public void execute() {
+        manager.addAssignment(assignment);
+    }
+
+    @Override
+    public void undo() {
+        manager.removeAssignment(assignment);
+    }
+}
+
+// Concrete Command to remove an assignment
+class RemoveAssignmentCommand implements Command {
+    private AssignmentManager manager;
+    private String assignment;
+
+    public RemoveAssignmentCommand(AssignmentManager manager, String assignment) {
+        this.manager = manager;
+        this.assignment = assignment;
+    }
+
+    @Override
+    public void execute() {
+        manager.removeAssignment(assignment);
+    }
+
+    @Override
+    public void undo() {
+        manager.addAssignment(assignment);
+    }
+}
+
+// Invoker Class
+class AssignmentManager {
+    private List<String> assignments = new ArrayList<>();
+    private List<Command> commandHistory = new ArrayList<>();
+
+    public void addAssignment(String assignment) {
+        assignments.add(assignment);
+        System.out.println("Added assignment: " + assignment);
+        commandHistory.add(new AddAssignmentCommand(this, assignment));
+    }
+
+    public void removeAssignment(String assignment) {
+        assignments.remove(assignment);
+        System.out.println("Removed assignment: " + assignment);
+        commandHistory.add(new RemoveAssignmentCommand(this, assignment));
+    }
+
+    public void undoLastAction() {
+        if (!commandHistory.isEmpty()) {
+            Command command = commandHistory.remove(commandHistory.size() - 1);
+            command.undo();
+        } else {
+            System.out.println("No actions to undo.");
+        }
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        AssignmentManager manager = new AssignmentManager();
+        Scanner scanner = new Scanner(System.in);
+        
+        while (true) {
+            System.out.println("Enter command (add [assignment]/remove [assignment]/undo/exit):");
+            String command = scanner.nextLine();
+
+            if (command.equalsIgnoreCase("exit")) {
+                break;
+            } else if (command.startsWith("add ")) {
+                String assignment = command.substring(4).trim();
+                if (!assignment.isEmpty()) {
+                    Command addCommand = new AddAssignmentCommand(manager, assignment);
+                    addCommand.execute();
+                } else {
+                    System.out.println("Please provide an assignment name.");
+                }
+            } else if (command.startsWith("remove ")) {
+                String assignment = command.substring(7).trim();
+                if (!assignment.isEmpty()) {
+                    Command removeCommand = new RemoveAssignmentCommand(manager, assignment);
+                    removeCommand.execute();
+                } else {
+                    System.out.println("Please provide an assignment name.");
+                }
+            } else if (command.equalsIgnoreCase("undo")) {
+                manager.undoLastAction();
+            } else {
+                System.out.println("Invalid command.");
+            }
+        }
+
+        scanner.close();
+    }
+}
