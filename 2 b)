@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+// Assignment Interface
+interface Assignment {
+    void create();
+}
+
+// Concrete Classes
+class Homework implements Assignment {
+    @Override
+    public void create() {
+        System.out.println("Creating homework assignment.");
+    }
+}
+
+class Project implements Assignment {
+    @Override
+    public void create() {
+        System.out.println("Creating project assignment.");
+    }
+}
+
+class Quiz implements Assignment {
+    @Override
+    public void create() {
+        System.out.println("Creating quiz assignment.");
+    }
+}
+
+// Factory Class
+class AssignmentFactory {
+    public Assignment createAssignment(String type) {
+        switch (type.toLowerCase()) {
+            case "homework":
+                return new Homework();
+            case "project":
+                return new Project();
+            case "quiz":
+                return new Quiz();
+            default:
+                throw new IllegalArgumentException("Unknown assignment type.");
+        }
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        AssignmentFactory factory = new AssignmentFactory();
+
+        while (true) {
+            System.out.println("Enter assignment type (homework/project/quiz) or 'exit' to quit:");
+            String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            try {
+                Assignment assignment = factory.createAssignment(input);
+                assignment.create();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        scanner.close();
+        System.out.println("Exiting the program.");
+    }
+}
