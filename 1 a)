@@ -1,0 +1,77 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Observer Interface
+interface Observer {
+    void update(String message);
+}
+
+// Subject Class
+class Classroom {
+    private List<Observer> observers = new ArrayList<>();
+    private String name;
+
+    public Classroom(String name) {
+        this.name = name;
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
+    }
+
+    public void addAssignment(String assignmentDetails) {
+        notifyObservers("New assignment: " + assignmentDetails);
+    }
+}
+
+// Concrete Observer Class
+class Student implements Observer {
+    private String id;
+
+    public Student(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public void update(String message) {
+        System.out.println("Student " + id + " received: " + message);
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Classroom classroom = new Classroom("Math 101");
+
+        // Adding students
+        System.out.print("Enter Student ID for Student 1: ");
+        String student1Id = scanner.nextLine();
+        Student student1 = new Student(student1Id);
+        classroom.addObserver(student1);
+
+        System.out.print("Enter Student ID for Student 2: ");
+        String student2Id = scanner.nextLine();
+        Student student2 = new Student(student2Id);
+        classroom.addObserver(student2);
+
+        // Adding assignments
+        while (true) {
+            System.out.print("Enter an assignment (or type 'exit' to quit): ");
+            String assignment = scanner.nextLine();
+            if (assignment.equalsIgnoreCase("exit")) {
+                break;
+            }
+            classroom.addAssignment(assignment);
+        }
+
+        scanner.close();
+    }
+}
